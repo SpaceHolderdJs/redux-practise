@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Main from "./components/Main";
+import { createContext, useEffect } from "react";
+import { useSelector } from "react-redux";
+import Cart from "./components/Cart";
+
+export const Context = createContext();
 
 function App() {
+  const cart = useSelector((store) => store.cart);
+
+  const findInCart = (item) => {
+    return cart.find((e) => e.id === item.id);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={{ findInCart }}>
+      <div className="app row">
+        <Main />
+        <Cart cart={cart} />
+      </div>
+    </Context.Provider>
   );
 }
 
